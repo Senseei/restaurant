@@ -1,0 +1,41 @@
+services:
+  app:
+    container_name: restaurant-container
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    env_file:
+      - .env
+    depends_on:
+      db:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "lsof", "-t", "-i:8080"]
+      timeout: 10s
+      retries: 5
+
+    working_dir: /app
+    volumes:
+      - ./src:/app/src
+      - ./test:/app/test
+
+  db:
+    image: postgres:16.4
+    container_name: restaurant-postgres-container
+    restart: always
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    volumes:
+      - restaurant-data:/var/lib/postgresql/data
+    env_file:
+      - .env
+    ports:
+      - "5433:5432"
+
+volumes:
+  restaurant-data:
