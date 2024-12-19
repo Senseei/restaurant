@@ -3,9 +3,9 @@ spring:
     name: restaurant
 
   datasource:
-    url: ${SPRING_DATABASE_URL}
-    username: ${SPRING_DATABASE_USERNAME}
-    password: ${SPRING_DATABASE_PASSWORD}
+    url: ${SPRING_DATABASE_URL:jdbc:postgresql://localhost:5432/postgres}
+    username: ${SPRING_DATABASE_USERNAME:postgres}
+    password: ${SPRING_DATABASE_PASSWORD:postgres}
     driver-class-name: org.postgresql.Driver
 
   jpa:
@@ -15,3 +15,10 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
+
+server:
+  servlet:
+    context-path: /api
+
+api:
+  jwt-secret: ${JWT_SECRET:YourVeryLongSecretKeyThatIsAtLeast32Bytes}
